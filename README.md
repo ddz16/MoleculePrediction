@@ -27,7 +27,7 @@ MuMu-S checkpoint:
 checkpoints/littlegin=graphclinit_bert=scibert_epoch=299-step=18300.ckpt
 ```
 
-After downloading, you should put these two checkpoints into the `checkpoints` folder.
+After downloading, you should put these two checkpoints into the `checkpoints/` folder.
 
 # Finetuning
 Finetune on MoMu-K:
@@ -46,9 +46,9 @@ Results will be recorded in `result.log`.
 
 # Sample Result
 
-Finetune MuMu-K on the muv dataset
+Finetune MuMu-K on the muv dataset.
 
-Finetune process:
+**Finetune process**:
 ```
 MoleculeDataset(93087)
 scaffold
@@ -101,7 +101,7 @@ Iteration:   2%|▏         | 50/2328 [00:04<02:54, 13.09it/s]
 ...
 ```
 
-Prediction results:
+**Prediction results**:
 ```
 muv 0 0.686400937903898
 muv 1 0.7208213502256825
