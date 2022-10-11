@@ -13,15 +13,15 @@ If you cannot manage to install the old torch-geometric version, one alternative
 
 # Our Pretrained models
 
-To apply MoMu, we use the graph encoder in the pre-trained MoMu-S and MuMu-K as the initialization, respectively. You can download them on [the Baidu Netdisk](https://pan.baidu.com/s/1jvMP_ysQGTMd_2sTLUD45A), the password is **1234**. We then fine-tune the graph encoder on the training sets of these datasets for predicting molecular properties, respectively.
+To apply MoMu, we use the graph encoder in the pre-trained MoMu-S and MoMu-K as the initialization, respectively. You can download them on [the Baidu Netdisk](https://pan.baidu.com/s/1jvMP_ysQGTMd_2sTLUD45A), the password is **1234**. We then fine-tune the graph encoder on the training sets of these datasets for predicting molecular properties, respectively.
 
-MuMu-K checkpoint:
+MoMu-K checkpoint:
 
 ```
 checkpoints/littlegin=graphclinit_bert=kvplm_epoch=299-step=18300.ckpt
 ```
 
-MuMu-S checkpoint:
+MoMu-S checkpoint:
 
 ```
 checkpoints/littlegin=graphclinit_bert=scibert_epoch=299-step=18300.ckpt
@@ -33,20 +33,20 @@ After downloading, you should put these two checkpoints into the `checkpoints/` 
 Finetune on MoMu-K:
 
 ```
-./finetune_MuMu-K.sh
+./finetune_MoMu-K.sh
 ```
 
 Finetune on MoMu-S:
 
 ```
-./finetune_MuMu-S.sh
+./finetune_MoMu-S.sh
 ```
 
 Results will be recorded in `result.log`.
 
 # Sample Result
 
-Finetune MuMu-K on the muv dataset.
+Finetune MoMu-K on the muv dataset.
 
 **Finetune process**:
 ```
