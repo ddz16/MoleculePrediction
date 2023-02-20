@@ -1,5 +1,5 @@
 .gitignore
-MoMu_checkpoints
-dataset
+MoMu_checkpoints/
+dataset/
 chem_dataset.zip
 
