@@ -1,15 +1,50 @@
 # MoleculePrediction
  This repository contains the code of the downstream task (molecule property prediction) in the paper "Natural Language-informed Understanding of Molecule Graphs”
 
-# Acknowledgment
 
-We adapted the code of the PyTorch implementation of [GraphCL](https://github.com/Shen-Lab/GraphCL/tree/master/transferLearning_MoleculeNet_PPI/chem). Thanks to the original authors for their work!
 
-# Dependencies & Dataset
+# Environment
 
-Please refer to https://github.com/snap-stanford/pretrain-gnns#installation for environment setup and https://github.com/snap-stanford/pretrain-gnns#dataset-download to download dataset.
+Our environment:
+```
+Ubuntu 16.04.7 LTS
+gcc version: 5.4.0
+GPU: NVIDIA TITAN RTX 24GB
+NVIDIA-SMI 455.45.01
+Driver Version: 455.45.01
+CUDA Version: 11.1
+```
 
-If you cannot manage to install the old torch-geometric version, one alternative way is to use the new one (maybe ==1.6.0) and make some modifications based on this issue snap-stanford/pretrain-gnns#14. This might leads to some inconsistent results with those in the paper.
+Based on anaconda or miniconda, you can install the required packages as follows:
+```
+# python 3.9
+conda create --name MoleculePrediction python=3.9
+conda activate MoleculePrediction
+
+# pytorch 1.8.1
+pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+
+# torch_geometric 
+# you can download the following *.whl files in https://data.pyg.org/whl/
+pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_cluster-1.5.9-cp39-cp39-linux_x86_64.whl
+pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_scatter-2.0.7-cp39-cp39-linux_x86_64.whl
+pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_sparse-0.6.11-cp39-cp39-linux_x86_64.whl
+pip install torch-geometric
+
+# other packages
+pip install pandas
+pip install rdkit-pypi
+pip install tqdm
+pip install tensorboardx
+pip install networkx
+```
+
+# Datasets
+Please refer to https://github.com/snap-stanford/pretrain-gnns#dataset-download to download the 8 chem datasets. Because we install the new torch-geometric version instead of the old torch-geometric version provided in https://github.com/snap-stanford/pretrain-gnns, you need one more step. That is, after downloading and unzipping, you should remove all the `processed/` directories of 8 datasets in the `dataset/` folder. Otherwise you will get the following error:
+```
+RuntimeError: The 'data' object was created by an older version of PyG. If this error occurred while loading an already existing dataset, remove the 'processed/' directory in the dataset's root folder and try again.
+```
+
 
 # Our Pretrained models
 
@@ -27,28 +62,77 @@ MoMu-S checkpoint:
 checkpoints/littlegin=graphclinit_bert=scibert_epoch=299-step=18300.ckpt
 ```
 
-After downloading, you should put these two checkpoints into the `checkpoints/` folder.
+After downloading, you should put these two checkpoints into the `MoMu_checkpoints/` folder.
+
+
+# Reproduce results
+
+We provide 16 model checkpoints in the `GIN_checkpoints/` folder: **2 model initializations** (MoMu-K, MoMu-S) finetuned on the train sets of **8 datasets** (bbbp, tox21, toxcast, sider, clintox, muv, hiv, bace):
+
+```
+bbbp_MoMu-K.pth,       bbbp_MoMu-S.pth
+tox21_MoMu-K.pth,      tox21_MoMu-S.pth
+toxcast_MoMu-K.pth,    toxcast_MoMu-S.pth
+sider_MoMu-K.pth,      sider_MoMu-S.pth
+clintox_MoMu-K.pth,    clintox_MoMu-S.pth
+muv_MoMu-K.pth,        muv_MoMu-S.pth
+hiv_MoMu-K.pth,        hiv_MoMu-S.pth
+bace_MoMu-K.pth,       bace_MoMu-S.pth
+```
+
+Thus, you can directly use these checkpoints to evaluate the finetuned gnn model on the test sets of **8 datasets**. Here are the scripts for evaluation and the reproduced results (results will be written into the `result.log` file):
+
+**MoMu-K Script**
+```
+./predict_MoMu-K.sh
+```
+**MoMu-K Results**
+```
+bbbp 0.7133487654320989
+tox21 0.7612348746538177
+toxcast 0.6340565073924614
+sider 0.6141872557091731
+clintox 0.7979885656692038
+muv 0.7023955217302135
+hiv 0.7644469765735145
+bace 0.7706485828551556
+```
+
+**MoMu-S Script**
+```
+./predict_MoMu-S.sh
+```
+**MoMu-S Results**
+```
+bbbp 0.7119984567901235
+tox21 0.7549320642441969
+toxcast 0.6403441989756496
+sider 0.6065912378558332
+clintox 0.8032660827859452
+muv 0.697392886740407
+hiv 0.741512968577995
+bace 0.7788210745957224
+```
 
 # Finetuning
-Finetune on MoMu-K:
+
+If you want to initialize the gnn model with the MoMu-S and MoMu-K we provide, and finetune the gnn model on the training set of 8 datasets, you can run the following scripts:
+
+**Finetune on MoMu-K**:
 
 ```
 ./finetune_MoMu-K.sh
 ```
 
-Finetune on MoMu-S:
+**Finetune on MoMu-S**:
 
 ```
 ./finetune_MoMu-S.sh
 ```
 
-Results will be recorded in `result.log`.
-
-# Sample Result
+**Finetuning Example**:
 
 Finetune MoMu-K on the muv dataset.
-
-**Finetune process**:
 ```
 MoleculeDataset(93087)
 scaffold
@@ -101,19 +185,11 @@ Iteration:   2%|▏         | 50/2328 [00:04<02:54, 13.09it/s]
 ...
 ```
 
-**Prediction results**:
-```
-muv 0 0.686400937903898
-muv 1 0.7208213502256825
-muv 2 0.6904045632349599
-muv 3 0.6867226222897985
-muv 4 0.746586288785911
-muv 5 0.6702708041353815
-muv 6 0.7474960366735247
-muv 7 0.7077071846386775
-muv 8 0.7278327257241599
-muv 9 0.72664916270257
-```
+
+# Acknowledgment
+
+We adapted the code of the PyTorch implementation of [GraphCL](https://github.com/Shen-Lab/GraphCL/tree/master/transferLearning_MoleculeNet_PPI/chem). Thanks to the original authors for their work!
+
 # Citation
 
 ```

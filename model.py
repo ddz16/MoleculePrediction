@@ -348,17 +348,17 @@ class GNN_graphpred(torch.nn.Module):
         #self.gnn = GNN(self.num_layer, self.emb_dim, JK = self.JK, drop_ratio = self.drop_ratio)
 
         if 'pretrain' in model_file:
-            if model_file == 'pretrain_scibert':
-                ckpt = torch.load("./checkpoints/littlegin=graphclinit_bert=scibert_epoch=299-step=18300.ckpt")
-            elif model_file == 'pretrain_kvplm':
-                ckpt = torch.load("./checkpoints/littlegin=graphclinit_bert=kvplm_epoch=299-step=18300.ckpt")
+            if model_file == 'pretrain_MoMu-S':
+                ckpt = torch.load("./MoMu_checkpoints/littlegin=graphclinit_bert=scibert_epoch=299-step=18300.ckpt")
+            elif model_file == 'pretrain_MoMu-K':
+                ckpt = torch.load("./MoMu_checkpoints/littlegin=graphclinit_bert=kvplm_epoch=299-step=18300.ckpt")
             ckpt = ckpt['state_dict']
             pretrained_dict = {k[14:]: v for k, v in ckpt.items()}
             missing_keys, unexpected_keys = self.gnn.load_state_dict(pretrained_dict, strict=False)
             # print(missing_keys)
             # print(unexpected_keys)
         else:
-            self.gnn.load_state_dict(torch.load(model_file))
+            self.load_state_dict(torch.load("./GIN_checkpoints/"+model_file))
 
     def forward(self, *argv):
         if len(argv) == 4:

@@ -85,7 +85,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--batch_size', type=int, default=32,
                         help='input batch size for training (default: 32)')
-    parser.add_argument('--epochs', type=int, default=50,
+    parser.add_argument('--epochs', type=int, default=100,
                         help='number of epochs to train (default: 100)')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='learning rate (default: 0.001)')
@@ -153,13 +153,6 @@ def main():
         smiles_list = pd.read_csv('dataset/' + args.dataset + '/processed/smiles.csv', header=None)[0].tolist()
         train_dataset, valid_dataset, test_dataset = scaffold_split(dataset, smiles_list, null_value=0, frac_train=0.8,frac_valid=0.1, frac_test=0.1)
         print("scaffold")
-    elif args.split == "random":
-        train_dataset, valid_dataset, test_dataset = random_split(dataset, null_value=0, frac_train=0.8,frac_valid=0.1, frac_test=0.1, seed = args.seed)
-        print("random")
-    elif args.split == "random_scaffold":
-        smiles_list = pd.read_csv('dataset/' + args.dataset + '/processed/smiles.csv', header=None)[0].tolist()
-        train_dataset, valid_dataset, test_dataset = random_scaffold_split(dataset, smiles_list, null_value=0, frac_train=0.8,frac_valid=0.1, frac_test=0.1, seed = args.seed)
-        print("random scaffold")
     else:
         raise ValueError("Invalid split option.")
 
@@ -207,20 +200,16 @@ def main():
 
         print("train: %f val: %f test: %f" %(train_acc, val_acc, test_acc))
 
-        val_acc_list.append(val_acc)
-        test_acc_list.append(test_acc)
-        train_acc_list.append(train_acc)
+        if epoch > 20:
+            val_acc_list.append(val_acc)
+            test_acc_list.append(test_acc)
+            train_acc_list.append(train_acc)
 
         print("")
 
-        max_index = val_acc_list.index(max(val_acc_list))
-        
-        torch.save(model.state_dict(), "./checkpoint/"+args.dataset+str(epoch)+".pth")
+        if epoch > 20 and val_acc >= max(val_acc_list):
+            torch.save(model.state_dict(), "./GIN_checkpoints/"+args.dataset+"_"+args.input_model_file.split("_")[1]+".pth")
 
-
-    with open('result.log', 'a+') as f:
-        f.write(args.dataset + ' ' + str(args.runseed) + ' ' + str(test_acc_list[max_index]))
-        f.write('\n')
 
 if __name__ == "__main__":
     main()
