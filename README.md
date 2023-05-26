@@ -29,7 +29,7 @@ pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f htt
 pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_cluster-1.5.9-cp39-cp39-linux_x86_64.whl
 pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_scatter-2.0.7-cp39-cp39-linux_x86_64.whl
 pip install https://data.pyg.org/whl/torch-1.8.0%2Bcu111/torch_sparse-0.6.11-cp39-cp39-linux_x86_64.whl
-pip install torch-geometric
+pip install torch-geometric==1.7.2
 
 # other packages
 pip install pandas
@@ -40,9 +40,10 @@ pip install networkx
 ```
 
 # Datasets
-Please refer to https://github.com/snap-stanford/pretrain-gnns#dataset-download to download the 8 chem datasets. Because we install the new torch-geometric version instead of the old torch-geometric version provided in https://github.com/snap-stanford/pretrain-gnns, you need one more step. That is, after downloading and unzipping, you should remove all the `processed/` directories of 8 datasets in the `dataset/` folder. Otherwise you will get the following error:
+
 ```
-RuntimeError: The 'data' object was created by an older version of PyG. If this error occurred while loading an already existing dataset, remove the 'processed/' directory in the dataset's root folder and try again.
+wget http://snap.stanford.edu/gnn-pretrain/data/chem_dataset.zip
+unzip chem_dataset.zip
 ```
 
 
